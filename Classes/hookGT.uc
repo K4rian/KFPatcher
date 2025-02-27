@@ -21,6 +21,10 @@ var bool bBossView;
 var float BossViewBackTime;
 var transient ZombieBoss BossArray;
 
+// all traders open fix
+// only applied once during the server's lifespan
+var bool bAllTradersOpenFixApplied;
+
 
 //=============================================================================
 //                      GameLength / MaxPlayers Fix
@@ -49,25 +53,8 @@ event InitGame(string Options, out string Error)
     else Warn("MULTIPLE KFLEVELRULES FOUND!!!!!");
   }
 
-  // added all traders open option
-  foreach AllActors(class'ShopVolume', SH)
-  {
-    if (SH == none)
-      continue;
-
-    // open everything
-    if (class'Settings'.default.bAllTradersOpen)
-    {
-      SH.bAlwaysClosed = false;
-      SH.bAlwaysEnabled = true;
-    }
-
-    // now fill the array ;d
-    if (!SH.bObjectiveModeOnly || bUsingObjectiveMode )
-    {
-      ShopList[ShopList.Length] = SH;
-    }
-  }
+  // add traders
+  class'Utility'.static.RegisterAllTraders(self, ShopList, bUsingObjectiveMode);
 
   if (class'Settings'.default.bAllTradersOpen)
     log("> bAllTradersOpen = true. All traders will be open!");
@@ -526,6 +513,13 @@ state MatchInProgress
 
     else if ( NumMonsters <= 0 )
     {
+      // apply the 'All Traders Open' fix only during the initial wave, if enabled
+      if ( WaveNum == InitialWave && !class'hookGT'.default.bAllTradersOpenFixApplied && class'Settings'.default.bAllTradersOpen ) 
+      {
+        class'hookGT'.default.bAllTradersOpenFixApplied = true;
+        class'Utility'.static.RegisterAllTraders(self, ShopList, bUsingObjectiveMode);
+      }
+
       if ( WaveNum == FinalWave && !bUseEndGameBoss )
       {
         if( bDebugMoney )
