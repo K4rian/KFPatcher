@@ -155,7 +155,7 @@ event InitGame(string Options, out string Error)
   class'hookGT'.default.CmdLine = Options;
 
 	// reset cash toss limiters
-	class'Utility'.static.ResetCashTossLimiters();
+  class'Utility'.static.ResetCashTossLimiters();
 }
 
 
