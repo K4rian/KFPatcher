@@ -87,7 +87,7 @@ exec function TossCash(int Amount)
   if (Controller.PlayerReplicationInfo.Score<=0 || Amount<=0)
     return;
 
-  if (!class'Utility'.static.CanPlayerTossCash(PlayerController(Controller), class'Settings'.default.fDoshThrowDelay))
+  if ( !class'Utility'.static.CanPlayerTossCash(PlayerController(Controller)) )
     return;
 
   Amount = Min(Amount, int(Controller.PlayerReplicationInfo.Score));

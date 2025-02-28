@@ -167,7 +167,7 @@ final static function RegisterAllTraders(Actor game, out array<ShopVolume> ShopL
 }
 
 
-static function bool CanPlayerTossCash(PlayerController pc, float cooldown)
+static function bool CanPlayerTossCash(PlayerController pc)
 {
     local float fCurrentTime;
     local int iCleanIndex;
@@ -202,8 +202,8 @@ static function bool CanPlayerTossCash(PlayerController pc, float cooldown)
     {
         if ( default.PlayerCashTossLimiters[iLimiterIndex].pc == pc ) 
         {
-            // if cooldown isn't over, block toss
-            if ( fCurrentTime < default.PlayerCashTossLimiters[iLimiterIndex].fLastToss + cooldown ) 
+            // block toss
+            if ( fCurrentTime < default.PlayerCashTossLimiters[iLimiterIndex].fLastToss + class'Settings'.default.fDoshThrowDelay ) 
                 return false;
 
             // update last toss time
