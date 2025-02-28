@@ -74,7 +74,8 @@ exec function TossCash(int Amount)
   // if (Level.TimeSeconds < class'hookPawn'.default.cashtimer || PlayerReplicationInfo == none)
   //   return;
   // class'hookPawn'.default.cashtimer = Level.TimeSeconds + class'Settings'.default.fDoshThrowDelay;
-  if (!class'Utility'.static.CanPlayerTossCash(PlayerController(Controller), class'Settings'.default.fDoshThrowDelay))
+
+  if ( PlayerReplicationInfo == none )
     return;
 
   // min dosh amount to throw
@@ -85,6 +86,10 @@ exec function TossCash(int Amount)
   Controller.PlayerReplicationInfo.Score = int(Controller.PlayerReplicationInfo.Score); // To fix issue with throwing 0 pounds.
   if (Controller.PlayerReplicationInfo.Score<=0 || Amount<=0)
     return;
+
+  if (!class'Utility'.static.CanPlayerTossCash(PlayerController(Controller), class'Settings'.default.fDoshThrowDelay))
+    return;
+
   Amount = Min(Amount, int(Controller.PlayerReplicationInfo.Score));
 
   GetAxes(Rotation,X,Y,Z);
